@@ -1,0 +1,42 @@
+services:
+    pos-be:
+        container_name: pos-be
+        depends_on:
+            - pos-mysql
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ./:/var/www/html
+            - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+        ports:
+            - 8000:80
+            
+    pos-mysql:
+        container_name: pos-mysql
+        image: mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+            - MYSQL_USER=${DB_USERNAME}
+            - MYSQL_PASSWORD=${DB_PASSWORD}
+            - MYSQL_DATABASE=${DB_DATABASE}
+        volumes:
+            - ./docker/mysql/data:/var/lib/mysql
+            - ./docker/mysql/init_scripts/:/docker-entrypoint-initdb.d
+        ports:
+            - 3306:3306
+
+    pos-phpmyadmin:
+        container_name: pos-phpmyadmin
+        depends_on:
+            - pos-mysql
+        image: phpmyadmin
+        ports:
+            - 8080:80
+        environment:
+            - PMA_ARBITRARY=1
+            - PMA_HOST=pos-mysql
+            - PMA_PORT=3306
+            - PMA_USER=root
+            - PMA_PASSWORD=${DB_PASSWORD}
+            - UPLOAD_LIMIT=50M
