@@ -30,4 +30,16 @@ class ProductRequest extends FormRequest
             'selling_price' => [ 'required', 'decimal:0,2' ],
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.unique' => 'Product already exists.',
+        ];
+    }
 }

@@ -58,15 +58,9 @@ class ProductController extends Controller
             $selling_price
         );
 
-        if ( $product ) {
-            return response()->json([
-                'message' => 'Success'
-            ], 200);
-        }
-        
         return response()->json([
-            'message' => 'Internal Server Error'
-        ], 500);
+            'message' => 'Product succesfully saved.'
+        ], 200);
     }
 
     /**
