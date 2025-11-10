@@ -20,7 +20,7 @@ class ProductRepository
             'description'   => $description,
             'category_id'   => $category_id,
             'price'         => $price,
-            'mark_up'       => $category_id,
+            'mark_up'       => $mark_up,
             'selling_price' => $selling_price,
         ]);
     }

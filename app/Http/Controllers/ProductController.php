@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ProductRequest;
+use App\Models\Category;
+use App\Models\Product;
 use App\Services\ProductService;
 
 class ProductController extends Controller
@@ -18,14 +21,16 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index() : JsonResponse 
     {
-        return response()->json(
-            [
-                'message'   => 'product listing'
-            ],
-            200
-        );
+        $products = Product::paginate(10, ['*'], 'page', 1);
+
+        foreach ( $products as $product ) {
+            $category = Category::find(1);
+            $product->category = $category->name;
+        }
+
+        return response()->json($products, 200);
     }
 
     /**
@@ -39,6 +44,8 @@ class ProductController extends Controller
      * @bodyParam price decimal(0, 2) required - price of the product
      * @bodyParam mark_up numeric required - percentage mark up of the product
      * @bodyParam selling_price required - selling price of the product (price + mark up)
+     * 
+     * @return Illuminate\Http\JsonResponse
      */
     public function store(ProductRequest $request)
     {
