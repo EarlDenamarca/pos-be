@@ -21,12 +21,14 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() : JsonResponse 
+    public function index( Request $request ) : JsonResponse 
     {
-        $products = Product::paginate(10, ['*'], 'page', 1);
+        $page_number    = $request->has('page') ? $request->page : 1;
+        $limit          = $request->has('limit') ? $request->limit : 10;
+        $products       = Product::paginate($limit, ['*'], 'page', $page_number);
 
         foreach ( $products as $product ) {
-            $category = Category::find(1);
+            $category = Category::find($product->category_id);
             $product->category = $category->name;
         }
 
