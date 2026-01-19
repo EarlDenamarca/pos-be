@@ -18,9 +18,5 @@ Route::group(
         Route::get( '/product', [ ProductController::class, 'index' ] );
         Route::post( '/product', [ ProductController::class, 'store' ] );
         Route::post( '/sales', [ SaleController::class, 'store' ] );
-
-        // Route::get( '/test', function () {
-        //     return 'Hello World';
-        // } );
     }
 );
