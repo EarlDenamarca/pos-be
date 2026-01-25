@@ -13,6 +13,7 @@ use App\Http\Controllers\LoginController;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::post( '/login', [ LoginController::class, 'login' ] );
+    Route::post( '/refresh', [ LoginController::class, 'refresh' ] );
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get( '/product', [ ProductController::class, 'index' ] );

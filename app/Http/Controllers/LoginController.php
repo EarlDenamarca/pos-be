@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RefreshRequest;
 
 use App\Services\AuthService;
 use App\Services\UserService;
@@ -20,7 +22,7 @@ class LoginController extends Controller
         $this->user_service = $user_service;
     }
 
-    public function login( LoginRequest $request )
+    public function login( LoginRequest $request ) : JsonResponse 
     {
         $user = $this->user_service->findUserByEmail( $request->email );
         if ( !$user ) {
@@ -38,6 +40,12 @@ class LoginController extends Controller
         $auth                   = $this->auth_service->authenticate( $request->email, $request->password );
         $user->tokens           = $auth;
 
-        return $user;
+        return response()->json($user, 200);
+    }
+
+    public function refresh( RefreshRequest $request ) : JsonResponse
+    {
+        $tokens = $this->auth_service->refreshToken( $request->refresh_token );
+        return response()->json($tokens->tokens, $tokens->status);
     }
 }
