@@ -12,9 +12,11 @@ class SaleItem extends Model
         'product_id',
         'name',
         'description',
+        'price',
         'selling_price',
         'quantity',
         'sub_total',
+        'profit'
     ];
 
     public function sale(): BelongsTo

@@ -17,9 +17,11 @@ return new class extends Migration
             $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->decimal('price', 10, 2);
             $table->decimal('selling_price', 10, 2);
             $table->unsignedInteger('quantity');
             $table->decimal('sub_total', 10, 2);
+            $table->decimal('profit', 10, 2);
             $table->timestamps();
         });
     }
