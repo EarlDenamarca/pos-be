@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\SaleRequest;
 use App\Services\SaleService;
 
+use Carbon\Carbon;
+
 class SaleController extends Controller
 {
     private SaleService $sale_service;
@@ -43,6 +45,41 @@ class SaleController extends Controller
         return response()->json([
             'message' => 'Sale successfully saved.',
             'sale_id' => $sale->id,
+        ], 200);
+    }
+
+    /**
+     * Display a listing of sale items.
+     *
+     * @param Illuminate\Http\Request $request
+     *
+     * @queryParam cursor    string  - pagination cursor
+     * @queryParam limit     integer - number of results per page
+     * @queryParam category  integer - product category id
+     * @queryParam date      string  - sale_items created date (YYYY-MM-DD)
+     */
+    public function index( Request $request ) : JsonResponse
+    {
+        $limit       = $request->has('limit') ? $request->limit : 20;
+        $cursor      = $request->query('cursor');
+        $category_id = $request->has('category') ? (int) $request->category : null;
+        $date        = $request->query('date');
+
+        if ( $date !== null && $date !== '' ) {
+            $date = Carbon::createFromFormat( 'Y-m-d', $date )->format('Y-m-d');
+        }
+
+        $items = $this->sale_service->listSaleItems(
+            $limit,
+            $cursor,
+            $category_id,
+            $date
+        );
+        $totals = $this->sale_service->saleItemsTotals($category_id, $date);
+
+        return response()->json([
+            'items' => $items,
+            'totals' => $totals,
         ], 200);
     }
 }

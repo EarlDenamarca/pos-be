@@ -44,4 +44,5 @@ class SaleRepository
             return $sale;
         });
     }
+
 }

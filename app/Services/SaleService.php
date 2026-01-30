@@ -3,15 +3,22 @@
 namespace App\Services;
 
 use App\Models\Sale;
+use Illuminate\Contracts\Pagination\CursorPaginator;
+use App\Repositories\SaleItemsRepository;
 use App\Repositories\SaleRepository;
 
 class SaleService
 {
     private SaleRepository $sale_repo;
+    private SaleItemsRepository $sale_items_repo;
 
-    public function __construct( SaleRepository $sale_repo )
+    public function __construct(
+        SaleRepository $sale_repo,
+        SaleItemsRepository $sale_items_repo
+    )
     {
         $this->sale_repo = $sale_repo;
+        $this->sale_items_repo = $sale_items_repo;
     }
 
     public function storeSale(
@@ -27,5 +34,28 @@ class SaleService
             $change,
             $purchase_list
         );
+    }
+
+    public function listSaleItems(
+        int $limit,
+        ?string $cursor,
+        ?int $category_id,
+        ?string $date
+    ) : CursorPaginator
+    {
+        return $this->sale_items_repo->cursorPaginateSaleItems(
+            $limit,
+            $cursor,
+            $category_id,
+            $date
+        );
+    }
+
+    public function saleItemsTotals(
+        ?int $category_id,
+        ?string $date
+    ) : array
+    {
+        return $this->sale_items_repo->totals($category_id, $date);
     }
 }
