@@ -19,7 +19,9 @@ Route::group(['prefix' => 'v1'], function () {
         // Product Endpoints
         Route::get( '/product', [ ProductController::class, 'index' ] );
         Route::post( '/product', [ ProductController::class, 'store' ] );
-
+        Route::get( '/product/{id}', [ ProductController::class, 'show' ] );
+        Route::put( '/product/{id}', [ ProductController::class, 'update' ] );
+        
         // Sales Endpoints
         Route::get( '/sales', [ SaleController::class, 'index' ] );
         Route::post( '/sales', [ SaleController::class, 'store' ] );

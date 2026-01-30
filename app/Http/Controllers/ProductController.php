@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Services\ProductService;
 
 class ProductController extends Controller
@@ -73,18 +74,43 @@ class ProductController extends Controller
 
     /**
      * Display the specified resource.
+     * 
+     * @param int $id
+     * 
+     * @return Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function show( int $id ) : JsonResponse
     {
-        //
+        $product = $this->product_service->showProduct($id);
+
+        return response()->json($product, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateProductRequest $request, int $id) : JsonResponse
     {
-        //
+        $name           = $request->name;
+        $description    = $request->description;
+        $category_id    = $request->category_id;
+        $price          = $request->price;
+        $mark_up        = $request->mark_up;
+        $selling_price  = $request->selling_price;
+
+        $this->product_service->updateProduct(
+            $id,
+            $name,
+            $description,
+            $category_id,
+            $price,
+            $mark_up,
+            $selling_price
+        );
+
+        return response()->json([
+            'message' => 'Product succesfully updated.'
+        ], 200);
     }
 
     /**

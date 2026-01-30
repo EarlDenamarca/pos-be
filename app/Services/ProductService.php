@@ -56,4 +56,37 @@ class ProductService
             $selling_price
         );
     }
+
+    public function showProduct( int $id ) : Product
+    {
+        $product = $this->product_repo->find($id);
+        $category = $this->category_repo->find($product->category_id);
+
+        if ( $category ) {
+            $product->category = $category->name;
+        }
+
+        return $product;
+    }
+
+    public function updateProduct(
+        int $id,
+        string $name,
+        ?string $description,
+        int $category_id,
+        float $price,
+        float $mark_up,
+        float $selling_price
+    ) : Product
+    {
+        return $this->product_repo->update(
+            $id,
+            $name,
+            $description,
+            $category_id,
+            $price,
+            $mark_up,
+            $selling_price
+        );
+    }
 }

@@ -43,4 +43,33 @@ class ProductRepository
             'selling_price' => $selling_price,
         ]);
     }
+
+    public function find( int $id ) : Product
+    {
+        return Product::findOrFail($id);
+    }
+
+    public function update(
+        int $id,
+        string $name,
+        ?string $description,
+        int $category_id,
+        float $price,
+        float $mark_up,
+        float $selling_price
+    ) : Product
+    {
+        $product = Product::findOrFail($id);
+
+        $product->update([
+            'name'          => $name,
+            'description'   => $description,
+            'category_id'   => $category_id,
+            'price'         => $price,
+            'mark_up'       => $mark_up,
+            'selling_price' => $selling_price,
+        ]);
+
+        return $product;
+    }
 }
