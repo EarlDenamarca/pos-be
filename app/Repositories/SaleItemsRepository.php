@@ -32,12 +32,12 @@ class SaleItemsRepository
     ) : array
     {
         $totals = $this->buildBaseQuery($category_id, $date)
-            ->selectRaw('SUM(sale_items.profit) as profit_sum, SUM(sale_items.selling_price) as selling_price_sum')
+            ->selectRaw('SUM(sale_items.profit) as profit_sum, SUM(sale_items.sub_total) as sub_total_sum')
             ->first();
 
         return [
             'profit_sum' => (float) ($totals->profit_sum ?? 0),
-            'selling_price_sum' => (float) ($totals->selling_price_sum ?? 0),
+            'sub_total_sum' => (float) ($totals->sub_total_sum ?? 0),
         ];
     }
 
