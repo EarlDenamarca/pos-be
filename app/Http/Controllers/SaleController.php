@@ -8,6 +8,8 @@ use App\Http\Requests\SaleRequest;
 use App\Services\SaleService;
 
 use Carbon\Carbon;
+use DateTimeZone;
+use Exception;
 
 class SaleController extends Controller
 {
@@ -57,6 +59,7 @@ class SaleController extends Controller
      * @queryParam limit     integer - number of results per page
      * @queryParam category  integer - product category id
      * @queryParam date      string  - sale_items created date (YYYY-MM-DD)
+     * @queryParam timezone  string  - IANA timezone name (e.g. Asia/Manila)
      */
     public function index( Request $request ) : JsonResponse
     {
@@ -64,18 +67,38 @@ class SaleController extends Controller
         $cursor      = $request->query('cursor');
         $category_id = $request->has('category') ? (int) $request->category : null;
         $date        = $request->query('date');
+        $timezone    = $request->query('timezone');
+
+        if ( $timezone === null || $timezone === '' ) {
+            $timezone = config('app.timezone', 'UTC');
+        } else {
+            try {
+                new DateTimeZone($timezone);
+            } catch ( Exception $e ) {
+                return response()->json([
+                    'message' => 'Invalid timezone. Provide a valid IANA timezone (e.g. Asia/Manila).',
+                ], 422);
+            }
+        }
 
         if ( $date !== null && $date !== '' ) {
-            $date = Carbon::createFromFormat( 'Y-m-d', $date )->format('Y-m-d');
+            try {
+                $date = Carbon::createFromFormat( 'Y-m-d', $date, $timezone )->format('Y-m-d');
+            } catch ( Exception $e ) {
+                return response()->json([
+                    'message' => 'Invalid date. Expected format: YYYY-MM-DD.',
+                ], 422);
+            }
         }
 
         $items = $this->sale_service->listSaleItems(
             $limit,
             $cursor,
             $category_id,
-            $date
+            $date,
+            $timezone
         );
-        $totals = $this->sale_service->saleItemsTotals($category_id, $date);
+        $totals = $this->sale_service->saleItemsTotals($category_id, $date, $timezone);
 
         return response()->json([
             'items' => $items,

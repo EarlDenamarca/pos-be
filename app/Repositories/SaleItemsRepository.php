@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\SaleItem;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 
 class SaleItemsRepository
@@ -11,10 +12,11 @@ class SaleItemsRepository
         int $limit,
         ?string $cursor,
         ?int $category_id,
-        ?string $date
+        ?string $date,
+        ?string $timezone
     ) : CursorPaginator
     {
-        $query = $this->buildBaseQuery($category_id, $date)
+        $query = $this->buildBaseQuery($category_id, $date, $timezone)
             ->select('sale_items.*', 'categories.name as category');
 
         return $query->orderBy('sale_items.id')
@@ -28,10 +30,11 @@ class SaleItemsRepository
 
     public function totals(
         ?int $category_id,
-        ?string $date
+        ?string $date,
+        ?string $timezone
     ) : array
     {
-        $totals = $this->buildBaseQuery($category_id, $date)
+        $totals = $this->buildBaseQuery($category_id, $date, $timezone)
             ->selectRaw('SUM(sale_items.profit) as profit_sum, SUM(sale_items.sub_total) as sub_total_sum')
             ->first();
 
@@ -43,7 +46,8 @@ class SaleItemsRepository
 
     private function buildBaseQuery(
         ?int $category_id,
-        ?string $date
+        ?string $date,
+        ?string $timezone
     )
     {
         $query = SaleItem::query()
@@ -55,7 +59,17 @@ class SaleItemsRepository
         }
 
         if ( $date !== null && $date !== '' ) {
-            $query->whereDate('sale_items.created_at', $date);
+            $query_timezone = $timezone ?? config('app.timezone', 'UTC');
+            $storage_timezone = config('app.timezone', 'UTC');
+
+            $start = Carbon::createFromFormat('Y-m-d', $date, $query_timezone)
+                ->startOfDay()
+                ->setTimezone($storage_timezone);
+            $end = Carbon::createFromFormat('Y-m-d', $date, $query_timezone)
+                ->endOfDay()
+                ->setTimezone($storage_timezone);
+
+            $query->whereBetween('sale_items.created_at', [$start, $end]);
         }
 
         return $query;

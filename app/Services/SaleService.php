@@ -40,22 +40,25 @@ class SaleService
         int $limit,
         ?string $cursor,
         ?int $category_id,
-        ?string $date
+        ?string $date,
+        ?string $timezone
     ) : CursorPaginator
     {
         return $this->sale_items_repo->cursorPaginateSaleItems(
             $limit,
             $cursor,
             $category_id,
-            $date
+            $date,
+            $timezone
         );
     }
 
     public function saleItemsTotals(
         ?int $category_id,
-        ?string $date
+        ?string $date,
+        ?string $timezone
     ) : array
     {
-        return $this->sale_items_repo->totals($category_id, $date);
+        return $this->sale_items_repo->totals($category_id, $date, $timezone);
     }
 }
