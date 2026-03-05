@@ -58,7 +58,7 @@ class SaleController extends Controller
      * @queryParam cursor    string  - pagination cursor
      * @queryParam limit     integer - number of results per page
      * @queryParam category  integer - product category id
-     * @queryParam date      string  - sale_items created date (YYYY-MM-DD)
+     * @queryParam date      string  - sold_items created date (YYYY-MM-DD)
      * @queryParam timezone  string  - IANA timezone name (e.g. Asia/Manila)
      */
     public function index( Request $request ) : JsonResponse

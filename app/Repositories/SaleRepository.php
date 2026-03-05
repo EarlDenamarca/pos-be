@@ -5,7 +5,7 @@ namespace App\Repositories;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\Sale;
-use App\Models\SaleItem;
+use App\Models\SoldItem;
 
 class SaleRepository
 {
@@ -28,7 +28,7 @@ class SaleRepository
                 $total_orignal_price    = $original_price * $item['quantity'];
                 $profit                 = $item['sub_total'] - $total_orignal_price;
 
-                SaleItem::create([
+                SoldItem::create([
                     'sale_id'       => $sale->id,
                     'product_id'    => $item['id'],
                     'name'          => $item['name'],

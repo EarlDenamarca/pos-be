@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\SaleItem;
+use App\Models\SoldItem;
 
-class SaleItemsSeeder extends Seeder
+class SoldItemSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,7 @@ class SaleItemsSeeder extends Seeder
     public function run(): void
     {
         for ( $i = 0; $i < 100; $i++ ) {
-            SaleItem::create([
+            SoldItem::create([
                 'sale_id'       => 12,
                 'product_id'    => 13,
                 'name'          => 'Calla Powder',

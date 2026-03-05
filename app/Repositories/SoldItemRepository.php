@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Models\SaleItem;
+use App\Models\SoldItem;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 
-class SaleItemsRepository
+class SoldItemRepository
 {
     public function cursorPaginateSaleItems(
         int $limit,
@@ -17,12 +17,12 @@ class SaleItemsRepository
     ) : CursorPaginator
     {
         $query = $this->buildBaseQuery($category_id, $date, $timezone)
-            ->select('sale_items.*', 'categories.name as category');
+            ->select('sold_items.*', 'categories.name as category');
 
-        return $query->orderBy('sale_items.id')
+        return $query->orderBy('sold_items.id')
             ->cursorPaginate(
                 $limit,
-                ['sale_items.*', 'categories.name as category'],
+                ['sold_items.*', 'categories.name as category'],
                 'cursor',
                 $cursor
             );
@@ -35,7 +35,7 @@ class SaleItemsRepository
     ) : array
     {
         $totals = $this->buildBaseQuery($category_id, $date, $timezone)
-            ->selectRaw('SUM(sale_items.profit) as profit_sum, SUM(sale_items.sub_total) as sub_total_sum')
+            ->selectRaw('SUM(sold_items.profit) as profit_sum, SUM(sold_items.sub_total) as sub_total_sum')
             ->first();
 
         return [
@@ -50,8 +50,8 @@ class SaleItemsRepository
         ?string $timezone
     )
     {
-        $query = SaleItem::query()
-            ->leftJoin('products', 'products.id', '=', 'sale_items.product_id')
+        $query = SoldItem::query()
+            ->leftJoin('products', 'products.id', '=', 'sold_items.product_id')
             ->leftJoin('categories', 'categories.id', '=', 'products.category_id');
 
         if ( $category_id !== null ) {
@@ -69,7 +69,7 @@ class SaleItemsRepository
                 ->endOfDay()
                 ->setTimezone($storage_timezone);
 
-            $query->whereBetween('sale_items.created_at', [$start, $end]);
+            $query->whereBetween('sold_items.created_at', [$start, $end]);
         }
 
         return $query;
