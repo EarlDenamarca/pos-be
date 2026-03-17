@@ -13,6 +13,8 @@ fi
 
 chown www-data:www-data storage/oauth-private.key storage/oauth-public.key
 chmod 600 storage/oauth-private.key storage/oauth-public.key
+chmod -R 775 bootstrap/cache
+chown -R www-data:www-data bootstrap/cache storage
 
 php artisan optimize:clear
 
