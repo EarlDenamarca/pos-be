@@ -30,7 +30,7 @@ class SaleRequest extends FormRequest
             'purchase_list.*.name'          => [ 'required', 'string' ],
             'purchase_list.*.description'   => [ 'nullable', 'string' ],
             'purchase_list.*.selling_price' => [ 'required', 'decimal:0,2' ],
-            'purchase_list.*.quantity'      => [ 'required', 'integer', 'min:1' ],
+            'purchase_list.*.quantity'      => [ 'required', 'numeric', 'gt:0' ],
             'purchase_list.*.sub_total'     => [ 'required', 'decimal:0,2' ],
         ];
     }
