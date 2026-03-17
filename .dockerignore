@@ -1,2 +1,9 @@
 ./docker/mysql
 ./vendor
+./storage/oauth-private.key 
+./storage/oauth-public.key
+./app/Http/Controllers/SpecialProductController.php
+./app/Models/SpecialProduct.php
+./app/Repositories/SpecialProductRepository.php
+./app/Services/SpecialProductService.php
+./database/migrations/2026_03_17_001748_2026_03_16_074438_create_special_products_table.php
