@@ -1,2 +1,4 @@
 ./docker/mysql
 ./vendor
+./storage/oauth-private.key 
+./storage/oauth-public.key
